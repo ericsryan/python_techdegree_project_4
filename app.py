@@ -19,7 +19,11 @@ def add_csv():
                 product_price=product_price,
                 date_updated=date_updated
             )
-            product_in_db = session.query(Product).filter(Product.product_name==new_product.product_name).one_or_none()
+            product_in_db = session.query(
+                    Product
+                ).filter(
+                    Product.product_name==new_product.product_name
+                ).one_or_none()
             if product_in_db:
                 if product_in_db.date_updated > new_product.date_updated:
                     continue
@@ -124,8 +128,11 @@ def view_product_menu():
         id_options = []
         for product in session.query(Product):
             id_options.append(str(product.product_id))
-            print("    " + str(product.product_id) + (' ' * (7 - len(str(product.product_id)))) + product.product_name)
-        print("\n    Enter an id number to view product details or enter 'm' to return to the main menu.")
+            print("    " + str(product.product_id) +
+                  (' ' * (7 - len(str(product.product_id)))) +
+                  product.product_name)
+        print("\n    Enter an id number to view product details "
+              "or enter 'm' to return to the main menu.")
         print("    You may need to scroll up to see all options.\n")
         choice = input("    >>> ")
         if choice.lower() == 'm':
@@ -143,7 +150,11 @@ def view_product_menu():
 def view_product(product_id):
     """View the details of a product"""
     clear_screen()
-    product = session.query(Product).filter(Product.product_id==product_id).first()
+    product = session.query(
+            Product
+        ).filter(
+            Product.product_id==product_id
+        ).first()
     print(f"""
     {product.product_name}
 
@@ -176,14 +187,28 @@ def add_product():
                 quantity_needed = False
         choice = input("Is all the information correct? Y/n: ")
         if choice.lower() == 'n':
-            choice = input("Would you like to [s]tart over or return to the [m]enu? S/m: ")
+            choice = input("Would you like to [s]tart over or "
+                           "return to the [m]enu? S/m: ")
             if choice.lower() == 'm':
                 clear_screen()
                 return None
             else:
                 continue
         else:
-            session.add(Product(product_name=product_name, product_price=product_price, product_quantity=product_quantity, date_updated=datetime.date.today()))
+            new_product = Product(
+                product_name=product_name,
+                product_price=product_price,
+                product_quantity=product_quantity,
+                date_updated=datetime.date.today()
+            )
+            product_in_db = session.query(
+                    Product
+                ).filter(
+                    Product.product_name==new_product.product_name
+                ).one_or_none()
+            if product_in_db:
+                session.delete(product_in_db)
+            session.add(new_product)
             session.commit()
             clear_screen()
             print("    The product has been added to the database")
@@ -195,9 +220,23 @@ def backup_database():
     """Backup the database to a new .csv file"""
     with open('backup.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["product_name", "product_price", "product_quantity", "date_updated"])
+        writer.writerow(
+            [
+                "product_name",
+                "product_price",
+                "product_quantity",
+                "date_updated"
+            ]
+        )
         for product in session.query(Product):
-            writer.writerow([product.product_name, f"${product.product_price/100}", product.product_quantity, product.date_updated.strftime("%m/%d/%Y")])
+            writer.writerow(
+                [
+                    product.product_name,
+                    f"${product.product_price/100}",
+                    product.product_quantity,
+                    product.date_updated.strftime("%m/%d/%Y")
+                ]
+            )
     clear_screen()
     print("    The database has been backed up to a .csv file")
 
