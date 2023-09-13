@@ -11,8 +11,6 @@ This Python application is a Store Inventory Management System that allows you t
   - [Adding Products](#adding-products)
   - [Viewing Products](#viewing-products)
   - [Backing Up the Database](#backing-up-the-database)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Getting Started
 
