@@ -19,6 +19,12 @@ def add_csv():
                 product_price=product_price,
                 date_updated=date_updated
             )
+            product_in_db = session.query(Product).filter(Product.product_name==new_product.product_name).one_or_none()
+            if product_in_db:
+                if product_in_db.date_updated > new_product.date_updated:
+                    continue
+                else:
+                    session.delete(product_in_db)
             session.add(new_product)
         session.commit()
 
@@ -61,10 +67,11 @@ Press [Enter] to continue...
 def clean_date(date):
     """Convert date string into a date object"""
     try:
-        date = datetime.datetime.strptime(date, '%m/%d/%Y')
+        date = datetime.datetime.strptime(date, '%m/%d/%Y').date()
     except ValueError:
-        input("""
+        input(f"""
 ***** DATE ERROR *****
+{date}
 The date should be formatted MM/DD/YYYY.
 Press [Enter] to continue...
 """)
@@ -72,6 +79,7 @@ Press [Enter] to continue...
         return date
     
 
+### Menus ###
 def main_menu():
     """Display program options"""
     clear_screen()
@@ -131,6 +139,7 @@ def view_product_menu():
             clear_screen()
 
 
+### Menu options ###
 def view_product(product_id):
     """View the details of a product"""
     clear_screen()
@@ -193,7 +202,7 @@ def backup_database():
     print("    The database has been backed up to a .csv file")
 
 
-
+### Applicaton ###
 def app():
     """Application logic"""
     main_menu()
