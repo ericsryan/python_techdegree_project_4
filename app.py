@@ -39,6 +39,18 @@ def clear_screen():
 
 
 ### Cleaning functions ###
+def clean_name(name):
+    """Ensure that the name is not blank"""
+    if name == '':
+        input("""
+***** NAME ERROR *****
+The name cannot be blank.
+Press [Enter] to continue...
+""")
+    else:
+        return name
+
+
 def clean_price(price):
     """Strip dollar sign from price and convert to integer"""
     try:
@@ -172,7 +184,12 @@ def add_product():
     while inputting_data:
         clear_screen()
         print("    Add a product to the inventory:\n")
-        product_name = input("    Product name: ")
+        name_needed = True
+        while name_needed:
+            product_name = input("    Product name: ")
+            product_name = clean_name(product_name)
+            if type(product_name) == str:
+                name_needed = False
         price_needed = True
         while price_needed:
             product_price = input("    Price (Ex: $25.99): $")
