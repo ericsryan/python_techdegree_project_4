@@ -1,3 +1,4 @@
 env
 inventory.db
 backup.csv
+__pychache__
